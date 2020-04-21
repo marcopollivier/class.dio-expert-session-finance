@@ -24,17 +24,39 @@
  termos certeza que tudo está de acordo com o que esperávamos. 
      - Dentro da pasta `dio-expert-session-finance/cmd/server/` vamos criar o arquivo `main.go`
      
-```go
-package main
+    ```go
+    package main
+    
+    import "fmt"
+    
+    func main() {
+        fmt.Print("Olá, Mundo!")
+    }    
+    ```
 
-import "fmt"
+Com isso já vemos que nosso ambiente está ok e funcional, mas ainda não é isso que queremos exatamente, correto? 
 
-func main() {
-    fmt.Print("Olá, Mundo!")
-}    
-```
+4. Mas precisamos evoluir nosso código para começar a tomar forma de uma API. 
 
-
+    ```go
+    package main
+    
+    import (
+           "fmt"
+           "net/http"
+    )
+    
+    func main() {
+           http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+                   fmt.Fprintf(w, "Olá. Bem vindo a minha página!")
+           })
+    
+           http.ListenAndServe(":8080", nil)
+    }
+    ```
+    `$ curl curl http://localhost:8080/`
+    
+    
  
         
         
