@@ -20,6 +20,21 @@
     - VSCode 
     - Vim 
     
+ 3. Agora que temos o nosso projeto funcionando corretamente, vamos criar um `Hello, World!` para 
+ termos certeza que tudo está de acordo com o que esperávamos. 
+     - Dentro da pasta `dio-expert-session-finance/cmd/server/` vamos criar o arquivo `main.go`
+     
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Print("Olá, Mundo!")
+}    
+```
+
+
  
         
         
