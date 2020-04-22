@@ -243,11 +243,11 @@ Para isso vamos pensar num modelo para trabalharmos.
 10. Vamos começar a pensar em um pouco de qualidade de código também
 
     10.1. Para fazer análise de código estática, vamos instalar a dependencia do lint 
-        `$ go get -u golang.org/x/lint/golint`
+    - `$ go get -u golang.org/x/lint/golint`
         
     10.2. E vamos executar nossos primeiros comandos relacionados 
-    	`$ go test ./...`
-    	`$ golint ./...`
+    - `$ go test ./...`
+    - `$ golint ./...`
 
 11. Vamos configurar o CircleCI 
 
@@ -290,5 +290,111 @@ Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso tes
        docker-compose -f .devops/postgres.yml up -d
     ```
 
+14. Já com o banco acessível via Docker, vamos criar a base que utilizaremos no nosso teste
+   
+    ```sql
+    CREATE TABLE transactions (
+        id SERIAL PRIMARY KEY,
+        title varchar(100),
+        amount decimal,
+        type smallint,
+        installment smallint,
+        created_at timestamp 
+    );
+    
+    insert into transactions (title, amount, type, installment, created_at)
+    values ('Freela', '100.0', 0, 1, '2020-04-10 04:05:06'); 
+   
+    select * from transactions;
+    ```
 
+15. Agora com a estrutra de banco criada, vamos fazer as alterações necessárias no código. E a primeira delas é baixar a
+dependência do driver do Postgres. 
 
+    [Lista de SQLDrivers disponíveis](https://github.com/golang/go/wiki/SQLDrivers) 
+
+    Execute o seguinte comando dentro da pasta do projeto 
+    
+    ```shell script
+    $ go get -u github.com/lib/pq
+    ```
+
+16. E esse é o código que vai manipular as informações do banco de fato
+
+    ```go
+    package postgres
+    
+    import (
+    	"database/sql"
+    	"fmt"
+    	"github.com/marcopollivier/dio-expert-session-pre-class/model/transaction"
+    
+    	_ "github.com/lib/pq"
+    )
+    
+    const (
+    	host     = "localhost"
+    	port     = 5432
+    	user     = "postgres"
+    	password = "postgres"
+    	dbname   = "diodb"
+    )
+    
+    func connect() *sql.DB {
+    	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
+    	var db, _ = sql.Open("postgres", psqlInfo)
+    	return db
+    }
+    
+    func Create(transaction transaction.Transaction) int {
+    	var db = connect()
+    	defer db.Close()
+    
+    	var sqlStatement = `INSERT INTO  transactions (title, amount, type, installment, created_at)
+    						VALUES ($1, $2, $3, $4, $5)
+    						RETURNING id;`
+    
+    	var id int
+    	_ = db.QueryRow(sqlStatement,
+    					transaction.Title,
+    					transaction.Amount,
+    					transaction.Type,
+    					transaction.Installment,
+    					transaction.CreatedAt).Scan(&id)
+    	fmt.Println("New record ID is:", id)
+    
+    	return id
+    }
+      
+    func main() {
+    	//log.Fatal(http.Init())
+    
+    	//"Outro freela", 400.0, 0, 1, "2020-04-20 12:00:06"
+    	postgres.Create(transaction.Transaction{Title: "Outro freela", Amount: 600.0, Type: 0, Installment: 1, CreatedAt: util.StringToTime("2020-04-20T12:00:06")})
+    }
+    
+    func FetchAll() transaction.Transactions {
+    	var db = connect()
+    	defer db.Close()
+    
+    	rows, _ := db.Query("SELECT title, amount, type, installment, created_at FROM transactions")
+    	defer rows.Close()
+    
+    	var transactionSlice []transaction.Transaction
+    	for rows.Next() {
+    		var transaction transaction.Transaction
+    		_ = rows.Scan(&transaction.Title,
+    					  &transaction.Amount,
+    					  &transaction.Type,
+    					  &transaction.Installment,
+    					  &transaction.CreatedAt)
+    
+    		transactionSlice = append(transactionSlice, transaction)
+    	}
+    
+    	return transactionSlice
+    }
+    
+    fmt.Print(postgres.FetchAll())
+    ```
+    
