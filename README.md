@@ -132,3 +132,51 @@ Para isso vamos pensar num modelo para trabalharmos.
     }
     ```
 
+6. E agora vamos fazer um método de inserção (POST)
+    
+    ```go
+    http.HandleFunc("/transactions/create", createATransaction)
+   
+    ...
+   
+    func createATransaction(w http.ResponseWriter, r *http.Request) {
+    	if r.Method != "POST" {
+    		w.WriteHeader(http.StatusMethodNotAllowed)
+    		return
+    	}
+    
+    	var res = Transactions{}
+    	var body, _ = ioutil.ReadAll(r.Body)
+    	_ = json.Unmarshal(body, &res)
+    
+    	fmt.Println(res)
+    	fmt.Println(res[0].Title)
+    	fmt.Println(res[1].Title)
+    }
+    ```
+   
+    ```json
+    [
+       {
+           "title": "Salário",
+           "amount": 1200,
+           "type": 0,
+           "created_at": "2020-04-05T11:45:26Z"
+       }
+    ]
+    ```
+   
+   ```shell script
+   $ curl -X POST 'http://localhost:8080/transactions/create' \
+   -H 'Content-Type: application/json' \
+   -d '[
+           {
+               "title": "Salário",
+               "amount": 1200,
+               "type": 0,
+               "created_at": "2020-04-05T11:45:26Z"
+           }
+       ]'
+   ```
+   
+   
