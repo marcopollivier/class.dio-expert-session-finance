@@ -178,8 +178,11 @@ Para isso vamos pensar num modelo para trabalharmos.
            }
        ]'
    ```
+   
+7. Hora de refatorar. Vamos colocar em memória e isolar em arquivos e pacotes
+  
 
-7. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
+8. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
 Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso teste. 
 
     Vamos subir o BD via Docker Compose
