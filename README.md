@@ -249,7 +249,17 @@ Para isso vamos pensar num modelo para trabalharmos.
     	`$ go test ./...`
     	`$ golint ./...`
 
-11. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
+11. Vamos configurar o CircleCI 
+
+12. Vamos colocar métricas na nossa aplicação 
+
+    ```
+    $ go get github.com/prometheus/client_golang/prometheus
+    $ go get github.com/prometheus/client_golang/prometheus/promauto
+    $ go get github.com/prometheus/client_golang/prometheus/promhttp 
+    ```
+
+13. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
 Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso teste. 
 
     Vamos subir o BD via Docker Compose
