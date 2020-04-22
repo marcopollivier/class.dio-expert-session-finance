@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Init() error{
+func Init() error {
 	http.HandleFunc("/health", actuator.Health)
 
 	http.HandleFunc("/transactions", transaction.GetTransactions)
