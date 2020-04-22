@@ -178,5 +178,37 @@ Para isso vamos pensar num modelo para trabalharmos.
            }
        ]'
    ```
+
+7. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
+Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso teste. 
+
+    Vamos subir o BD via Docker Compose
+    
+    host: localhost
+    user: postgres
+    pass: postgres
+    DB: diodb
+    
+    ```yaml
+    version: "3"
+    services:
+      postgres:
+        image: postgres:9.6
+        container_name: "postgres"
+        environment:
+          - POSTGRES_DB=diodb
+          - POSTGRES_USER=postgres
+          - TZ=GMT
+        volumes:
+          - "./data/postgres:/var/lib/postgresql/data"
+        ports:
+          - 5432:5432
+    ```
    
-   
+   ```makefile
+    prepare-tests:
+        docker-compose -f .devops/postgres.yml up -d
+   ```
+
+
+
