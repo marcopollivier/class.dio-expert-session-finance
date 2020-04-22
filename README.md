@@ -240,10 +240,10 @@ Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso tes
           - 5432:5432
     ```
    
-   ```makefile
+    ```makefile
     prepare-tests:
-        docker-compose -f .devops/postgres.yml up -d
-   ```
+       docker-compose -f .devops/postgres.yml up -d
+    ```
 
 
 
