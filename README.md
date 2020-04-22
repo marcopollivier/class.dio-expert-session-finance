@@ -180,9 +180,41 @@ Para isso vamos pensar num modelo para trabalharmos.
    ```
    
 7. Hora de refatorar. Vamos colocar em memória e isolar em arquivos e pacotes
-  
+ 
+8. Vamos começar a pensar em monitoramento? Então vamos criar um arquivo de Healthcheck
 
-8. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
+    ```go
+    package actuator
+    
+    import (
+        "encoding/json"
+        "net/http"
+    )
+    
+    func Health(responseWriter http.ResponseWriter, request *http.Request) {
+        responseWriter.Header().Set("Content-Type", "application/json")
+    
+        profile := HealthBody{"alive"}
+    
+        returnBody, err := json.Marshal(profile)
+        if err != nil {
+            http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+            return
+        }
+    
+        _, err = responseWriter.Write(returnBody)
+        if err != nil {
+            http.Error(responseWriter, err.Error(), http.StatusInternalServerError)
+            return
+        }
+    }
+    
+    type HealthBody struct {
+        Status string
+    }
+    ``` 
+
+9. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
 Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso teste. 
 
     Vamos subir o BD via Docker Compose
