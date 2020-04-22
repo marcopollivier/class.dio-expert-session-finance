@@ -21,10 +21,11 @@ func main() {
 //	0. entrada
 //	1. saida
 type Transaction struct {
-	Title     string    `json:"title"`
-	Amount    float32   `json:"amount"`
-	Type      int       `json:"type"`
-	CreatedAt time.Time `json:"created_at"`
+	Title       string    `json:"title"`
+	Amount      float32   `json:"amount"`
+	Type        int       `json:"type"`
+	Installment int       `json:"installment"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Transactions []Transaction
@@ -42,15 +43,24 @@ func getTransactions(w http.ResponseWriter, r *http.Request) {
 	paidElectricityBill, _ := time.Parse(layout, "2020-04-12T22:00:00")
 	var transactions = Transactions{
 		Transaction{
-			Title:     "Salário",
-			Amount:    1200.0,
-			Type:      0,
-			CreatedAt: salaryReceived,
+			Title:       "Salário",
+			Amount:      1200.0,
+			Type:        0,
+			Installment: 1,
+			CreatedAt:   salaryReceived,
 		},
 		Transaction{
 			Title:     "Conta de luz",
 			Amount:    100.0,
 			Type:      1,
+			Installment: 1,
+			CreatedAt: paidElectricityBill,
+		},
+		Transaction{
+			Title:     "Compra telefone celular",
+			Amount:    999.99,
+			Type:      1,
+			Installment: 10,
 			CreatedAt: paidElectricityBill,
 		},
 	}
@@ -69,5 +79,4 @@ func createATransaction(w http.ResponseWriter, r *http.Request) {
 	_ = json.Unmarshal(body, &res)
 
 	fmt.Println(res)
-	fmt.Println(res[0].Title)
 }
