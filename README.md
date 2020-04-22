@@ -34,7 +34,7 @@
     }    
     ```
 
-Com isso já vemos que nosso ambiente está ok e funcional, mas ainda não é isso que queremos exatamente, correto? 
+    Com isso já vemos que nosso ambiente está ok e funcional, mas ainda não é isso que queremos exatamente, correto? 
 
 4. Mas precisamos evoluir nosso código para começar a tomar forma de uma API. 
 
@@ -56,8 +56,79 @@ Com isso já vemos que nosso ambiente está ok e funcional, mas ainda não é is
     ```
     `$ curl curl http://localhost:8080/`
     
+5. Vamos começar a pensar no nosso modelo. Nós queremos criar um sistema pras nossas finanças pessoais. 
+Para isso vamos pensar num modelo para trabalharmos. 
+
+    5.1. Nosso modelo financeiro vai ser bem simples, mas flexível o suficiente para evoluirmos 
+    no futuro
     
+    - Titulo
+    - Valor 
+    - Tipo (ENTRADA, SAIDA)
+    - Data
  
-        
-        
+    5.2. Vamos pensar que, antes de mais nada, queremos retornar um JSON com esse modelo.
     
+    ```go
+    package main
+    
+    import (
+    	"encoding/json"
+    	"net/http"
+    	"time"
+    )
+    
+    func main() {
+    	http.HandleFunc("/transactions", getTransactions)
+    
+    	_ = http.ListenAndServe(":8080", nil)
+    }
+    
+    type Transaction struct {
+    	Title     string
+    	Amount    float32
+    	Type      int //0. entrada 1. saida
+    	CreatedAt time.Time
+    }
+    
+    type Transactions []Transaction
+    
+    func getTransactions(w http.ResponseWriter, r *http.Request) {
+    	if r.Method != "GET" {
+    		w.WriteHeader(http.StatusMethodNotAllowed)
+    		return
+    	}
+    
+    	w.Header().Set("Content-type", "application/json")
+    
+    	layout := "2006-01-02T15:04:05"
+    	salaryReceived, _ := time.Parse(layout, "2020-04-05T11:45:26")
+    	paidElectricityBill, _ := time.Parse(layout, "2020-04-12T22:00:00")
+    	var transactions = Transactions{
+    		Transaction{
+    			Title:     "Salário",
+    			Amount:    1200.0,
+    			Type:      0,
+    			CreatedAt: salaryReceived,
+    		},
+    		Transaction{
+    			Title:     "Conta de luz",
+    			Amount:    100.0,
+    			Type:      1,
+    			CreatedAt: paidElectricityBill,
+    		},
+    	}
+    
+    	_ = json.NewEncoder(w).Encode(transactions)
+    }
+    ```
+
+    ```go
+    type Tction struct {
+        Title     string    `json:"title"`
+        Amount    float32   `json:"amount"`
+        Type      int       `json:"type"` //0. entrada 1. saida
+        CreatedAt time.Time `json:"created_at"`
+    }
+    ```
+
