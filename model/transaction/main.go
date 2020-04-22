@@ -2,7 +2,7 @@ package transaction
 
 import "time"
 
-//type
+// Transaction type
 //	0. entrada
 //	1. saida
 type Transaction struct {

@@ -12,3 +12,10 @@ stop-app:
 
 prepare-env:
 	docker-compose -f .devops/postgres.yml up -d
+
+test:
+	go test ./...
+	go vet ./...
+
+lint:
+	golint ./...

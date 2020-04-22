@@ -214,7 +214,42 @@ Para isso vamos pensar num modelo para trabalharmos.
     }
     ``` 
 
-9. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
+9. Vamos aproveitar já que criamos um util e escrever um teste unitário para ele 
+   
+   ```go
+   package util
+   
+   import (
+   	"testing"
+   )
+   
+   func TestStringToDate(testing *testing.T) {
+   	var convertedTime = StringToTime("2019-02-12T10:00:00")
+   
+   	if convertedTime.Year() != 2019 {
+   		testing.Errorf("Converter StringToDate is failed. Expected Year %v, got %v", 2019, convertedTime.Year())
+   	}
+   
+   	if convertedTime.Month() != 2 {
+   		testing.Errorf("Converter StringToDate is failed. Expected Month %v, got %v", 2, convertedTime.Month())
+   	}
+   
+   	if convertedTime.Hour() != 10 {
+   		testing.Errorf("Converter StringToDate is failed. Expected Hour %v, got %v", 10, convertedTime.Hour())
+   	}
+   
+   }
+   ```  
+10. Vamos começar a pensar em um pouco de qualidade de código também
+
+    10.1. Para fazer análise de código estática, vamos instalar a dependencia do lint 
+        `$ go get -u golang.org/x/lint/golint`
+        
+    10.2. E vamos executar nossos primeiros comandos relacionados 
+    	`$ go test ./...`
+    	`$ golint ./...`
+
+11. Para os passos seguintes, nós vamos fazer uma integração com um BD qualquer. 
 Para isso, vamos subir uma imagem Docker do Postgres pra poder fazer o nosso teste. 
 
     Vamos subir o BD via Docker Compose
