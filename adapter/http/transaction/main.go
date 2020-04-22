@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/marcopollivier/dio-expert-session-pre-class/model/transaction"
+	"github.com/marcopollivier/dio-expert-session-pre-class/util"
 	"io/ioutil"
 	"net/http"
-	"time"
 )
 
 func GetTransactions(w http.ResponseWriter, r *http.Request) {
@@ -17,33 +17,29 @@ func GetTransactions(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-type", "application/json")
 
-	layout := "2006-01-02T15:04:05"
-	salaryReceived, _ := time.Parse(layout, "2020-04-05T11:45:26")
-	paidElectricityBill, _ := time.Parse(layout, "2020-04-12T22:00:00")
 	var transactions = transaction.Transactions{
 		transaction.Transaction{
 			Title:       "Salário",
 			Amount:      1200.0,
 			Type:        0,
 			Installment: 1,
-			CreatedAt:   salaryReceived,
+			CreatedAt:   util.StringToTime("2020-04-05T11:45:26"),
 		},
 		transaction.Transaction{
 			Title:     "Conta de luz",
 			Amount:    100.0,
 			Type:      1,
 			Installment: 1,
-			CreatedAt: paidElectricityBill,
+			CreatedAt: util.StringToTime("2020-04-12T22:00:00"),
 		},
 		transaction.Transaction{
 			Title:     "Compra telefone celular",
 			Amount:    999.99,
 			Type:      1,
 			Installment: 10,
-			CreatedAt: paidElectricityBill,
+			CreatedAt: util.StringToTime("2020-04-20T11:00:26"),
 		},
 	}
-
 	_ = json.NewEncoder(w).Encode(transactions)
 }
 
