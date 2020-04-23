@@ -1,4 +1,4 @@
-# dio-expert-session-pre-class
+# dio-expert-session-finance
 
 ## Pré Desenvolvimento
 
